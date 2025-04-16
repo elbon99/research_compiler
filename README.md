@@ -82,6 +82,8 @@ npm install
 From the root directory, start both services:
 ```
 npm run dev
+cd backend
+python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ## Services
