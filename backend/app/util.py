@@ -4,6 +4,8 @@ from bs4 import BeautifulSoup
 import httpx
 from typing import Dict, List, Optional
 import re
+import heapq
+
 async def fetch_webpage(url: str) -> str:
     """Fetch webpage content asynchronously."""
     async with httpx.AsyncClient() as client:
@@ -138,3 +140,49 @@ def is_prevnext_prev(url: str) -> bool:
     """
     pattern = re.compile(r"(?:https?://[^/]+)?/prevnext\?id=\d+\.\d+&function=prev&context=[^\"' >]+")
     return bool(pattern.fullmatch(url))
+
+
+class BinaryQueue:
+    """
+    A priority queue implementation using a binary heap that provides the same interface as SortedQueue
+    but with more efficient O(log n) operations for insertion and extraction.
+    """
+    
+    def __init__(self, initial_elements=None):
+        self._elements = []
+        if initial_elements:
+            for element in initial_elements:
+                self.append(element)
+    
+    def append(self, url):
+        # Get the priority for this URL
+        priority = self._get_priority(url)
+        # Insert as tuple of (priority, url) for the heap
+        heapq.heappush(self._elements, (priority, url))
+        
+    def popleft(self):
+        if not self._elements:
+            raise IndexError("Cannot pop from an empty queue")
+        # Return just the URL, not the priority
+        return heapq.heappop(self._elements)[1]
+    
+    def _get_priority(self, url):
+        if is_citation_main(url):
+            return 0  # Highest priority
+        elif is_prevnext_next(url) or is_prevnext_prev(url):
+            return 1  # Medium priority
+        elif is_search_url(url):
+            return 2  # Lowest priority
+        else:
+            return 3  # Default priority
+    
+    def __len__(self):
+        return len(self._elements)
+    
+    def __bool__(self):
+        return bool(self._elements)
+    
+    def __iter__(self):
+        # Note: This doesn't preserve priority order during iteration
+        # If that's needed, you'd need to copy and sort the elements
+        return (item[1] for item in self._elements)

@@ -10,9 +10,8 @@ from datetime import datetime
 import uuid
 import re
 from ..db_models import ScrapeJob, ProcessedArchive, save_scrape_job, save_processed_archive, db
-from ..util import ensure_absolute_url, scrape_example, fetch_webpage, parse_html, extract_urls, is_citation_main, is_citation_pdf, is_search_url
+from ..util import SortedQueue, ensure_absolute_url, scrape_example, fetch_webpage, parse_html, extract_urls, is_citation_main, is_citation_pdf, is_search_url
 import asyncio
-from collections import deque
 
 router = APIRouter(prefix="/api/scrape", tags=["scraper"])
 
@@ -91,7 +90,7 @@ async def process_scrape_job(job_id: str, url: str):
     print("Processing scrape job")
     try:
         # Create an empty queue
-        queue = deque([ensure_absolute_url(url, DOMAIN)])
+        queue = SortedQueue([ensure_absolute_url(url, DOMAIN)])
         count = 0
 
         while queue:
