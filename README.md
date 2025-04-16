@@ -1,4 +1,4 @@
-# Interview Scientist Monorepo
+# Research Compiler Monorepo
 
 A monorepo containing a FastAPI backend with web scraping capabilities (focused on arXiv papers) and a React TypeScript frontend.
 
