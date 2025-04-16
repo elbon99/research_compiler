@@ -109,7 +109,7 @@ async def process_scrape_job(job_id: str, url: str):
 
             if is_citation_main(url):
                 # Extract URLs from the citation main page
-                pdf_url = 'https://arxiv.org' + extracted_urls['citation_pdf'][0]
+                pdf_url = ensure_absolute_url(extracted_urls['citation_pdf'][0], DOMAIN)
                 extracted_data = await process_citation_main(soup)
                 pdf_data = await process_citation_pdf(pdf_url)
         
