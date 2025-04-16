@@ -84,10 +84,6 @@ From the root directory, start both services:
 npm run dev
 ```
 
-Or run them separately:
-- Backend: `npm run backend`
-- Frontend: `npm run frontend`
-
 ## Services
 
 - Frontend: http://localhost:3000
